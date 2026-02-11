@@ -3,12 +3,12 @@
 
 void *monitor_routine(void *arg)
 {
-	t_monitor_args *margs = (t_monitor_args *)arg;
-	t_philo *philos = margs->philos;
-	t_rules *rules = margs->rules;
+	t_monitor_args *moniter = (t_monitor_args *)arg;
+	t_philo *philos = moniter->philos;
+	t_rules *rules = moniter->rules;
 	int i;
 
-	while (!*(margs->stop_flag))
+	while (!*(moniter->stop_flag))
 	{
 		i = 0;
 		while (i < rules->number_of_philosophers)
@@ -26,7 +26,7 @@ void *monitor_routine(void *arg)
 				printf("%ld %d died\n", now, philos[i].id);
 				pthread_mutex_unlock(&rules->print_mutex);
 
-				*(margs->stop_flag) = true;
+				*(moniter->stop_flag) = true;
 				return (NULL);
 			}
 			i++;

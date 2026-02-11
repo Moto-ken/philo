@@ -2,7 +2,7 @@
 #include "philo.h"
 
 // 人数, 餓死時間, 食事時間, 睡眠時間, 何回食べるか
-t_philo *philosopher_create(t_rules *rules)
+t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 {
 	t_philo *philos = malloc(sizeof(t_philo) * rules->number_of_philosophers);
 	if (!philos)
@@ -25,6 +25,8 @@ t_philo *philosopher_create(t_rules *rules)
 			philos[i].left_fork = &rules->forks[i];
 			philos[i].right_fork = &rules->forks[(i + 1) % rules->number_of_philosophers];
 		}
+		pthread_mutex_init(&philos[i].meal_mutex, NULL);
+		philos[i].stop_flag = stop_flag;
 		i++;
 	}
 	return (philos);
@@ -74,7 +76,8 @@ int main(int argc, char **argv)
 	t_rules *rules = rules_create(argc, argv);
 	if (!rules)
 		return (1);
-	t_philo *philos = philosopher_create(rules);
+	bool stop_flag = false;
+	t_philo *philos = philosopher_init(rules, &stop_flag);
 	if (!philos)
 	{
 		// todo:make func
@@ -82,8 +85,14 @@ int main(int argc, char **argv)
 		return (1);
 	}
 
-	// make thread
+	// make thread 
+	if (run_threads(rules, philos))
+		return (1);
 
+	pthread_t monitor_thread;
+	if (create_monitor(philos, rules, &stop_flag, &monitor_thread))
+		return (1);
+	// todo:join?
 	free_rules(rules);
 	free_philos(philos);
 	return (0);

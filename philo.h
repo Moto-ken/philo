@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 
 // 引数の意味（日本語）
@@ -21,11 +22,10 @@ typedef struct s_rules
 	long	time_to_eat;
 	long	time_to_sleep;
 	int		number_of_times_each_philosopher_must_eat;
-	pthread_mutex_t *forks;
-	pthread_mutex_t print_mutex;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	print_mutex;
 }	t_rules;
 
-// 
 typedef struct s_philo
 {
 	int				id;
@@ -35,7 +35,17 @@ typedef struct s_philo
 	t_rules			*rules;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	pthread_mutex_t	*meal_mutex;
+	bool			*stop_flag;
 }	t_philo;
+
+// mutex stop_flag
+typedef struct s_monitor_args
+{
+	t_philo	*philos;
+	t_rules	*rules;
+	bool	*stop_flag;
+}	t_monitor_args;
 
 
 #endif

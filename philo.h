@@ -23,6 +23,7 @@ typedef struct s_rules
 	long			time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t	*forks;
+	struct timeval	start_time;
 	pthread_mutex_t	print_mutex;
 }					t_rules;
 

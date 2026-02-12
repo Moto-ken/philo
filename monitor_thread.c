@@ -21,13 +21,14 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&philos[i].meal_mutex);
 			last_meal = philos[i].last_meal_time;
 			pthread_mutex_unlock(&philos[i].meal_mutex);
-			now = get_timestamp_ms();
+			now = get_elapsed_ms(&rules->start_time);
 			if (now - last_meal > rules->time_to_die)
 			{
 				pthread_mutex_lock(&rules->print_mutex);
 				printf("%ld %d died\n", now, philos[i].id);
 				pthread_mutex_unlock(&rules->print_mutex);
 				*(moniter->stop_flag) = true;
+				free(moniter);
 				return (NULL);
 			}
 			i++;
@@ -49,12 +50,10 @@ int	create_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
 	args->philos = philos;
 	args->rules = rules;
 	args->stop_flag = stop_flag;
-	if (pthread_create(&monitor_thread, NULL, monitor_routine, args) != 0)
+	if (pthread_create(monitor_thread, NULL, monitor_routine, args) != 0)
 	{
 		free(args);
 		return (1);
 	}
-	// free?
-	free(args);
 	return (0);
 }

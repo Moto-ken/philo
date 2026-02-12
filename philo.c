@@ -51,6 +51,7 @@ t_rules	*rules_create(int argc, char **argv)
 	rules->time_to_die = atol(argv[2]);
 	rules->time_to_eat = atol(argv[3]);
 	rules->time_to_sleep = atol(argv[4]);
+	gettimeofday(&rules->start_time, NULL);
 	if (argc == 5)
 		rules->number_of_times_each_philosopher_must_eat = 0;
 	else if (argc == 6)
@@ -58,7 +59,10 @@ t_rules	*rules_create(int argc, char **argv)
 	rules->forks = malloc(sizeof(pthread_mutex_t)
 			* rules->number_of_philosophers);
 	if (!rules->forks)
-		return (1);
+	{
+		free(rules);
+		return (NULL);
+	}
 	i = 0;
 	while (i < rules->number_of_philosophers)
 	{
@@ -91,17 +95,21 @@ int	main(int argc, char **argv)
 	philos = philosopher_init(rules, &stop_flag);
 	if (!philos)
 	{
-		// todo:make func
 		free_rules(rules);
 		return (1);
 	}
-	// make thread
 	if (run_threads(rules, philos))
+	{
+		free_philos(philos, rules->number_of_philosophers);
+		free_rules(rules);
 		return (1);
+	}
 	if (create_monitor(philos, rules, &stop_flag, &monitor_thread))
+	{
+		free_philos(philos, rules->number_of_philosophers);
+		free_rules(rules);
 		return (1);
-	// todo:join?
-	free_rules(rules);
-	free_philos(philos);
+	}
+	join_and_free(rules, philos, monitor_thread);
 	return (0);
 }

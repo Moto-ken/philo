@@ -1,25 +1,37 @@
 
 #include "philo.h"
 
-// todo: remake print func
-void	print_status(t_philo *philo, char *msg)
+long	get_elapsed_ms(struct timeval *start)
 {
-	pthread_mutex_lock(&philo->rules->print_mutex);
-	printf("%ld %d %s\n", get_timestamp(), philo->id, msg);
-	pthread_mutex_unlock(&philo->rules->print_mutex);
+	struct timeval now;
+	gettimeofday(&now, NULL);
+	return (long)((now.tv_sec - start->tv_sec) * 1000
+				+ (now.tv_usec - start->tv_usec) / 1000);
 }
 
-void	precise_sleep(t_philo *philo, long duration_ms)
+// todo: remake print func
+void print_status(t_philo *philo, char *msg)
 {
-	long	start;
+    pthread_mutex_lock(&philo->rules->print_mutex);
+    printf("%ld %d %s\n", get_elapsed_ms(&philo->rules->start_time), philo->id, msg);
+    pthread_mutex_unlock(&philo->rules->print_mutex);
+}
 
-	start = get_timestamp_ms();
-	while (!*(philo->stop_flag))
-	{
-		if (get_timestamp_ms() - start >= duration_ms)
-			break;
-		usleep(100);
-	}
+void precise_sleep(t_philo *philo, long duration_ms)
+{
+    struct timeval start;
+	struct timeval now;
+	
+    gettimeofday(&start, NULL);
+    while (!*(philo->stop_flag))
+    {
+        gettimeofday(&now, NULL);
+        long elapsed = (now.tv_sec - start.tv_sec) * 1000
+                     + (now.tv_usec - start.tv_usec) / 1000;
+        if (elapsed >= duration_ms)
+            break;
+        usleep(500);
+    }
 }
 
 void	*philo_routine(void *arg)
@@ -40,22 +52,19 @@ void	*philo_routine(void *arg)
 			pthread_mutex_lock(philo->right_fork);
 		}
 		pthread_mutex_lock(&philo->meal_mutex);
-		philo->last_meal_time = get_timestamp_ms();
+		philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
 		pthread_mutex_unlock(&philo->meal_mutex);
 
 		print_status(philo, "is eating");
-		// usleep(philo->rules->time_to_eat * 1000);
 		precise_sleep(philo, philo->rules->time_to_eat);
 
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
 
 		print_status(philo, "is sleeping");
-		// usleep(philo->rules->time_to_sleep * 1000);
 		precise_sleep(philo, philo->rules->time_to_sleep);
 		// thinkingのときにマイクロ秒の遅延を入れると、安定するかも
 		print_status(philo, "is thinking");
-
 	}
 	return (NULL);
 }

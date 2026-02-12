@@ -2,12 +2,12 @@
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <stdbool.h>
-
+# include <pthread.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/time.h>
 
 // 引数の意味（日本語）
 // number_of_philosophers → 哲学者の数
@@ -17,14 +17,14 @@
 // [number_of_times_each_philosopher_must_eat]（オプション）→ 各哲学者が食事する回数（指定がなければ無制限）
 typedef struct s_rules
 {
-	int		number_of_philosophers;
-	long	time_to_die;
-	long	time_to_eat;
-	long	time_to_sleep;
-	int		number_of_times_each_philosopher_must_eat;
+	int				number_of_philosophers;
+	long			time_to_die;
+	long			time_to_eat;
+	long			time_to_sleep;
+	int				number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
-}	t_rules;
+}					t_rules;
 
 typedef struct s_philo
 {
@@ -37,15 +37,14 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*meal_mutex;
 	bool			*stop_flag;
-}	t_philo;
+}					t_philo;
 
 // mutex stop_flag
 typedef struct s_monitor_args
 {
-	t_philo	*philos;
-	t_rules	*rules;
-	bool	*stop_flag;
-}	t_monitor_args;
-
+	t_philo			*philos;
+	t_rules			*rules;
+	bool			*stop_flag;
+}					t_monitor_args;
 
 #endif

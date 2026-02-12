@@ -2,12 +2,15 @@
 #include "philo.h"
 
 // 人数, 餓死時間, 食事時間, 睡眠時間, 何回食べるか
-t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
+t_philo	*philosopher_init(t_rules *rules, bool *stop_flag)
 {
-	t_philo *philos = malloc(sizeof(t_philo) * rules->number_of_philosophers);
+	t_philo	*philos;
+	int		i;
+
+	philos = malloc(sizeof(t_philo) * rules->number_of_philosophers);
 	if (!philos)
 		return (NULL);
-	int i = 0;
+	i = 0;
 	while (i < rules->number_of_philosophers)
 	{
 		philos[i].id = i + 1;
@@ -23,7 +26,8 @@ t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 		else
 		{
 			philos[i].left_fork = &rules->forks[i];
-			philos[i].right_fork = &rules->forks[(i + 1) % rules->number_of_philosophers];
+			philos[i].right_fork = &rules->forks[(i + 1)
+				% rules->number_of_philosophers];
 		}
 		pthread_mutex_init(&philos[i].meal_mutex, NULL);
 		philos[i].stop_flag = stop_flag;
@@ -33,9 +37,13 @@ t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 }
 
 #include <string.h>
-t_rules *rules_create(int argc, char **argv)
+
+t_rules	*rules_create(int argc, char **argv)
 {
-	t_rules *rules = malloc(sizeof(t_rules));
+	t_rules	*rules;
+	int		i;
+
+	rules = malloc(sizeof(t_rules));
 	if (!rules)
 		return (NULL);
 	// todo:swap ft_atoi
@@ -47,17 +55,16 @@ t_rules *rules_create(int argc, char **argv)
 		rules->number_of_times_each_philosopher_must_eat = 0;
 	else if (argc == 6)
 		rules->number_of_times_each_philosopher_must_eat = atoi(argv[5]);
-
-	rules->forks = malloc(sizeof(pthread_mutex_t) * rules->number_of_philosophers);
+	rules->forks = malloc(sizeof(pthread_mutex_t)
+			* rules->number_of_philosophers);
 	if (!rules->forks)
 		return (1);
-	int i = 0;
+	i = 0;
 	while (i < rules->number_of_philosophers)
 	{
 		pthread_mutex_init(&rules->forks[i], NULL);
 		i++;
 	}
-
 	return (rules);
 }
 
@@ -68,28 +75,29 @@ t_rules *rules_create(int argc, char **argv)
 // timestamp_in_ms X is thinking      → 考えている
 // timestamp_in_ms X died             → 死亡した
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
+	t_rules		*rules;
+	bool		stop_flag;
+	t_philo		*philos;
+	pthread_t	monitor_thread;
+
 	if (argc != 6 && argc != 5)
 		return (1);
-
-	t_rules *rules = rules_create(argc, argv);
+	rules = rules_create(argc, argv);
 	if (!rules)
 		return (1);
-	bool stop_flag = false;
-	t_philo *philos = philosopher_init(rules, &stop_flag);
+	stop_flag = false;
+	philos = philosopher_init(rules, &stop_flag);
 	if (!philos)
 	{
 		// todo:make func
 		free_rules(rules);
 		return (1);
 	}
-
-	// make thread 
+	// make thread
 	if (run_threads(rules, philos))
 		return (1);
-
-	pthread_t monitor_thread;
 	if (create_monitor(philos, rules, &stop_flag, &monitor_thread))
 		return (1);
 	// todo:join?

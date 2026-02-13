@@ -1,7 +1,6 @@
 
 #include "philo.h"
 
-// 人数, 餓死時間, 食事時間, 睡眠時間, 何回食べるか
 t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 {
 	t_philo *philos;
@@ -17,7 +16,6 @@ t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 		philos[i].last_meal_time = 0;
 		philos[i].meals_eaten = 0;
 		philos[i].rules = rules;
-		// もしかしたらNULLにしないほうがいいかも
 		if (rules->number_of_philosophers == 1)
 		{
 			philos[0].left_fork = &rules->forks[0];

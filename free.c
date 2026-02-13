@@ -39,7 +39,6 @@ void	join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread)
 {
 	int i;
 
-	// 失敗することはそもそもあるかわからんけど、freeとかたりないかも
 	pthread_join(monitor_thread, NULL);
 	i = 0;
 	while (i < rules->number_of_philosophers)
@@ -47,7 +46,6 @@ void	join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread)
 		pthread_join(philos[i].thread_id, NULL);
 		i++;
 	}
-
 	i = 0;
 	while (i < rules->number_of_philosophers)
 	{

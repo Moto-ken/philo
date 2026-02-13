@@ -31,13 +31,15 @@ void *philo_routine(void *arg)
 	{
 		if (philo->id % 2 == 0)
 		{
-			pthread_mutex_lock(philo->right_fork);
+			if (philo->right_fork)
+				pthread_mutex_lock(philo->right_fork);
 			pthread_mutex_lock(philo->left_fork);
 		}
 		else
 		{
 			pthread_mutex_lock(philo->left_fork);
-			pthread_mutex_lock(philo->right_fork);
+			if (philo->right_fork)
+				pthread_mutex_lock(philo->right_fork);
 		}
 		pthread_mutex_lock(&philo->meal_mutex);
 		philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
@@ -47,17 +49,18 @@ void *philo_routine(void *arg)
 		precise_sleep(philo, philo->rules->time_to_eat);
 
 		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
+		if (philo->right_fork)
+			pthread_mutex_unlock(philo->right_fork);
 
 		print_status(philo, "is sleeping");
 		precise_sleep(philo, philo->rules->time_to_sleep);
-		// thinkingのときにms秒の遅延を入れると、安定するかも
+		usleep(1000);
 		print_status(philo, "is thinking");
 	}
 	return (NULL);
 }
 
-int run_threads(t_rules *rules, t_philo *philos)
+int run_philos(t_rules *rules, t_philo *philos)
 {
 	int i;
 

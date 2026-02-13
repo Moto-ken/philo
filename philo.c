@@ -35,22 +35,26 @@ t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 	return (philos);
 }
 
-#include <string.h>
 int atoi_datas(t_rules *rules, char **argv)
 {
-	rules->number_of_philosophers = atoi(argv[1]);
+	if (!isnum(argv[1]))
+		return (1);
+	rules->number_of_philosophers = ft_atoi(argv[1]);
 	if (rules->number_of_philosophers <= 0)
 		return (1);
-
-	rules->time_to_die = atol(argv[2]);
+	if (!isnum(argv[2]))
+		return (1);
+	rules->time_to_die = ft_atol(argv[2]);
 	if (rules->time_to_die <= 0)
 		return (1);
-
-	rules->time_to_eat = atol(argv[3]);
+	if (!isnum(argv[3]))
+		return (1);
+	rules->time_to_eat = ft_atol(argv[3]);
 	if (rules->time_to_eat <= 0)
 		return (1);
-
-	rules->time_to_sleep = atol(argv[4]);
+	if (!isnum(argv[4]))
+		return (1);
+	rules->time_to_sleep = ft_atol(argv[4]);
 	if (rules->time_to_sleep <= 0)
 		return (1);
 
@@ -65,41 +69,25 @@ t_rules *rules_create(int argc, char **argv)
 	rules = malloc(sizeof(t_rules));
 	if (!rules)
 		return (NULL);
-	// todo:swap ft_atoi
-	// rules->number_of_philosophers = atoi(argv[1]);
-	// if (rules->number_of_philosophers <= 0)
-	// {
-	// 	free(rules);
-	// 	return (NULL);
-	// }
-	// rules->time_to_die = atol(argv[2]);
-	// if (rulese->time_to_die <= 0)
-	// {
-	// 	free(rules);
-	// 	return (NULL);
-	// }
-	// rules->time_to_eat = atol(argv[3]);
-	// if (rules->time_to_eat <= 0)
-	// {
-	// 	free(rules);
-	// 	return (NULL);
-	// }
-	// rules->time_to_sleep = atol(argv[4]);
-	// if (rules->time_to_sleep <= 0)
-	// {
-	// 	free(rules);
-	// 	return (NULL);
-	// }
+
 	if (atoi_datas(rules, argv))
 	{
 		free(rules);
 		return (NULL);
 	}
 	gettimeofday(&rules->start_time, NULL);
+	pthread_mutex_init(&rules->print_mutex, NULL);
 	if (argc == 5)
 		rules->number_of_times_each_philosopher_must_eat = 0;
 	else if (argc == 6)
-		rules->number_of_times_each_philosopher_must_eat = atoi(argv[5]);
+	{
+		if (!isnum(argv[5]))
+		{
+			free(rules);
+			return (NULL);
+		}
+		rules->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
+	}
 	rules->forks = malloc(sizeof(pthread_mutex_t) * rules->number_of_philosophers);
 	if (!rules->forks)
 	{
@@ -134,13 +122,13 @@ int main(int argc, char **argv)
 		free_rules(rules);
 		return (1);
 	}
-	if (run_threads(rules, philos))
+	if (run_philos(rules, philos))
 	{
 		free_philos(philos, rules->number_of_philosophers);
 		free_rules(rules);
 		return (1);
 	}
-	if (create_monitor(philos, rules, &stop_flag, &monitor_thread))
+	if (run_monitor(philos, rules, &stop_flag, &monitor_thread))
 	{
 		free_philos(philos, rules->number_of_philosophers);
 		free_rules(rules);

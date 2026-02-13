@@ -8,10 +8,13 @@
 // timestamp_in_ms X is thinking      → 考えている
 // timestamp_in_ms X died             → 死亡した
 
-// todo: remake print func
 void print_status(t_philo *philo, char *msg)
 {
 	pthread_mutex_lock(&philo->rules->print_mutex);
-	printf("%ld %d %s\n", get_elapsed_ms(&philo->rules->start_time), philo->id, msg);
+	if (!*philo->stop_flag)
+	{
+		long time = get_elapsed_ms(&philo->rules->start_time);
+		printf("%ld %d %s\n", time, philo->id, msg);
+	}
 	pthread_mutex_unlock(&philo->rules->print_mutex);
 }

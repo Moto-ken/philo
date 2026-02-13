@@ -24,22 +24,21 @@ void	*monitor_routine(void *arg)
 			now = get_elapsed_ms(&rules->start_time);
 			if (now - last_meal > rules->time_to_die)
 			{
+				print_status(&philos[i], "died");
 				pthread_mutex_lock(&rules->print_mutex);
-				printf("%ld %d died\n", now, philos[i].id);
-				pthread_mutex_unlock(&rules->print_mutex);
 				*(moniter->stop_flag) = true;
+				pthread_mutex_unlock(&rules->print_mutex);
 				free(moniter);
 				return (NULL);
 			}
 			i++;
 		}
-		// これないとめっちゃ重くなるらしい
 		usleep(1000);
 	}
 	return (NULL);
 }
 
-int	create_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
+int	run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
 		pthread_t *monitor_thread)
 {
 	t_monitor_args	*args;

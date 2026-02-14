@@ -1,68 +1,99 @@
 
 #include "philo.h"
 
-void	*monitor_routine(void *arg)
+static bool	is_stopped(t_monitor_args *monitor)
 {
-	t_monitor_args	*moniter;
-	t_philo			*philos;
-	t_rules			*rules;
-	int				i;
-	bool			full;
-	long			last_meal;
-	long			now;
+	bool	stop;
 
-	moniter = (t_monitor_args *)arg;
-	philos = moniter->philos;
-	rules = moniter->rules;
-	while (1)
+	pthread_mutex_lock(&monitor->rules->print_mutex);
+	stop = *(monitor->stop_flag);
+	pthread_mutex_unlock(&monitor->rules->print_mutex);
+	return (stop);
+}
+
+static bool	check_death(t_monitor_args *monitor)
+{
+	t_philo	*philos;
+	t_rules	*rules;
+	long	last_meal;
+	long	now;
+	int		i;
+
+	philos = monitor->philos;
+	rules = monitor->rules;
+	i = 0;
+	while (i < rules->number_of_philosophers)
+	{
+		pthread_mutex_lock(&philos[i].meal_mutex);
+		last_meal = philos[i].last_meal_time;
+		pthread_mutex_unlock(&philos[i].meal_mutex);
+
+		now = get_elapsed_ms(&rules->start_time);
+		if (now - last_meal > rules->time_to_die)
+		{
+			pthread_mutex_lock(&rules->print_mutex);
+			*(monitor->stop_flag) = true;
+			printf("%ld %d died\n", get_elapsed_ms(&rules->start_time), philos[i].id);
+			pthread_mutex_unlock(&rules->print_mutex);
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+static bool	check_all_full(t_monitor_args *monitor)
+{
+	t_philo	*philos;
+	t_rules	*rules;
+	bool	full;
+	int		i;
+
+	rules = monitor->rules;
+	if (rules->number_of_times_each_philosopher_must_eat <= 0)
+		return (false);
+
+	philos = monitor->philos;
+	full = true;
+	i = 0;
+	while (i < rules->number_of_philosophers)
+	{
+		pthread_mutex_lock(&philos[i].meal_count_mutex);
+		if (philos[i].meal_count
+			< rules->number_of_times_each_philosopher_must_eat)
+			full = false;
+		pthread_mutex_unlock(&philos[i].meal_count_mutex);
+		i++;
+	}
+	if (full)
 	{
 		pthread_mutex_lock(&rules->print_mutex);
-		if (*(moniter->stop_flag))
-		{
-			pthread_mutex_unlock(&rules->print_mutex);
-			break ;
-		}
+		*(monitor->stop_flag) = true;
 		pthread_mutex_unlock(&rules->print_mutex);
+	}
+	return (full);
+}
 
-		i = 0;
-		while (i < rules->number_of_philosophers)
+void	*monitor_routine(void *arg)
+{
+	t_monitor_args	*monitor;
+
+	monitor = (t_monitor_args *)arg;
+	while (!is_stopped(monitor))
+	{
+		if (check_death(monitor))
 		{
-			pthread_mutex_lock(&philos[i].meal_mutex);
-			last_meal = philos[i].last_meal_time;
-			pthread_mutex_unlock(&philos[i].meal_mutex);
-			now = get_elapsed_ms(&rules->start_time);
-			if (now - last_meal > rules->time_to_die)
-			{
-				print_status(&philos[i], "died");
-				pthread_mutex_lock(&rules->print_mutex);
-				*(moniter->stop_flag) = true;
-				pthread_mutex_unlock(&rules->print_mutex);
-				return (NULL);
-			}
-			i++;
+			free(monitor);
+			return (NULL);
 		}
-		if (rules->number_of_times_each_philosopher_must_eat > 0)
+		if (check_all_full(monitor))
 		{
-			full = true;
-			i = 0;
-			while (i < rules->number_of_philosophers)
-			{
-				pthread_mutex_lock(&philos[i].meal_count_mutex);
-				if (philos[i].meal_count < rules->number_of_times_each_philosopher_must_eat)
-					full = false;
-				pthread_mutex_unlock(&philos[i].meal_count_mutex);
-				i++;
-			}
-			if (full)
-			{
-				pthread_mutex_lock(&rules->print_mutex);
-				*(moniter->stop_flag) = true;
-				pthread_mutex_unlock(&rules->print_mutex);
-				return (NULL);
-			}
+			free(monitor);
+			return (NULL);
 		}
 		usleep(1000);
 	}
+	free(monitor);
 	return (NULL);
 }
 

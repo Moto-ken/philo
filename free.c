@@ -60,6 +60,7 @@ void	join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread)
 		i++;
 	}
 	pthread_mutex_destroy(&rules->print_mutex);
+	free(rules->forks);
 	free(philos);
 	free(rules);
 }

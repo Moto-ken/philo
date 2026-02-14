@@ -10,16 +10,26 @@ long get_elapsed_ms(struct timeval *start)
 
 void precise_sleep(t_philo *philo, long duration_ms)
 {
-	struct timeval start;
-	long now;
+    struct timeval start;
+    long elapsed;
 
-	gettimeofday(&start, NULL);
-	while (!*(philo->stop_flag))
-	{
-		if ((now = get_elapsed_ms(&start)) >= duration_ms)
-			break;
-		usleep(500);
-	}
+    gettimeofday(&start, NULL);
+    while (1)
+    {
+        pthread_mutex_lock(&philo->rules->print_mutex);
+        if (*(philo->stop_flag))
+        {
+            pthread_mutex_unlock(&philo->rules->print_mutex);
+            break;
+        }
+        pthread_mutex_unlock(&philo->rules->print_mutex);
+
+        elapsed = get_elapsed_ms(&start);
+        if (elapsed >= duration_ms)
+            break;
+        
+        usleep(500);
+    }
 }
 
 void *philo_routine(void *arg)

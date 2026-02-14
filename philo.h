@@ -33,6 +33,8 @@ typedef struct s_philo
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	meal_mutex;
 	bool			*stop_flag;
+	int 			meal_count;
+	pthread_mutex_t	meal_count_mutex;
 }					t_philo;
 
 typedef struct s_monitor_args

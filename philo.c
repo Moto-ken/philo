@@ -1,7 +1,7 @@
 
 #include "philo.h"
 
-t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
+t_philo *philosopher_create(t_rules *rules, bool *stop_flag)
 {
 	t_philo *philos;
 	int i;
@@ -27,6 +27,7 @@ t_philo *philosopher_init(t_rules *rules, bool *stop_flag)
 			philos[i].right_fork = &rules->forks[(i + 1) % rules->number_of_philosophers];
 		}
 		pthread_mutex_init(&philos[i].meal_mutex, NULL);
+		pthread_mutex_init(&philos[i].meal_count_mutex, NULL);
 		philos[i].stop_flag = stop_flag;
 		i++;
 	}
@@ -89,6 +90,7 @@ t_rules *rules_create(int argc, char **argv)
 	rules->forks = malloc(sizeof(pthread_mutex_t) * rules->number_of_philosophers);
 	if (!rules->forks)
 	{
+		pthread_mutex_destroy(&rules->print_mutex);
 		free(rules);
 		return (NULL);
 	}
@@ -114,7 +116,7 @@ int main(int argc, char **argv)
 	if (!rules)
 		return (1);
 	stop_flag = false;
-	philos = philosopher_init(rules, &stop_flag);
+	philos = philosopher_create(rules, &stop_flag);
 	if (!philos)
 	{
 		free_rules(rules);

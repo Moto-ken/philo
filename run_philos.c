@@ -22,13 +22,21 @@ void precise_sleep(t_philo *philo, long duration_ms)
 	}
 }
 
-void *philo_routine(void *arg)
+void	*philo_routine(void *arg)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (!*(philo->stop_flag))
+	while (1)
 	{
+		pthread_mutex_lock(&philo->rules->print_mutex);
+		if (*(philo->stop_flag))
+		{
+			pthread_mutex_unlock(&philo->rules->print_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&philo->rules->print_mutex);
+
 		if (philo->id % 2 == 0)
 		{
 			if (philo->right_fork)
@@ -41,12 +49,19 @@ void *philo_routine(void *arg)
 			if (philo->right_fork)
 				pthread_mutex_lock(philo->right_fork);
 		}
-		pthread_mutex_lock(&philo->meal_mutex);
-		philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
-		pthread_mutex_unlock(&philo->meal_mutex);
+		if (philo->right_fork)
+		{
+			pthread_mutex_lock(&philo->meal_mutex);
+			philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
+			pthread_mutex_unlock(&philo->meal_mutex);
 
-		print_status(philo, "is eating");
-		precise_sleep(philo, philo->rules->time_to_eat);
+			pthread_mutex_lock(&philo->meal_count_mutex);
+			philo->meal_count++;
+			pthread_mutex_unlock(&philo->meal_count_mutex);
+
+			print_status(philo, "is eating");
+			precise_sleep(philo, philo->rules->time_to_eat);
+		}
 
 		pthread_mutex_unlock(philo->left_fork);
 		if (philo->right_fork)
@@ -54,6 +69,7 @@ void *philo_routine(void *arg)
 
 		print_status(philo, "is sleeping");
 		precise_sleep(philo, philo->rules->time_to_sleep);
+
 		usleep(1000);
 		print_status(philo, "is thinking");
 	}

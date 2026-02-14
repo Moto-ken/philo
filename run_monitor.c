@@ -7,14 +7,23 @@ void	*monitor_routine(void *arg)
 	t_philo			*philos;
 	t_rules			*rules;
 	int				i;
+	bool			full;
 	long			last_meal;
 	long			now;
 
 	moniter = (t_monitor_args *)arg;
 	philos = moniter->philos;
 	rules = moniter->rules;
-	while (!*(moniter->stop_flag))
+	while (1)
 	{
+		pthread_mutex_lock(&rules->print_mutex);
+		if (*(moniter->stop_flag))
+		{
+			pthread_mutex_unlock(&rules->print_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&rules->print_mutex);
+
 		i = 0;
 		while (i < rules->number_of_philosophers)
 		{
@@ -28,10 +37,29 @@ void	*monitor_routine(void *arg)
 				pthread_mutex_lock(&rules->print_mutex);
 				*(moniter->stop_flag) = true;
 				pthread_mutex_unlock(&rules->print_mutex);
-				free(moniter);
 				return (NULL);
 			}
 			i++;
+		}
+		if (rules->number_of_times_each_philosopher_must_eat > 0)
+		{
+			full = true;
+			i = 0;
+			while (i < rules->number_of_philosophers)
+			{
+				pthread_mutex_lock(&philos[i].meal_count_mutex);
+				if (philos[i].meal_count < rules->number_of_times_each_philosopher_must_eat)
+					full = false;
+				pthread_mutex_unlock(&philos[i].meal_count_mutex);
+				i++;
+			}
+			if (full)
+			{
+				pthread_mutex_lock(&rules->print_mutex);
+				*(moniter->stop_flag) = true;
+				pthread_mutex_unlock(&rules->print_mutex);
+				return (NULL);
+			}
 		}
 		usleep(1000);
 	}

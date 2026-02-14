@@ -50,6 +50,7 @@ void	join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread)
 	while (i < rules->number_of_philosophers)
 	{
 		pthread_mutex_destroy(&philos[i].meal_mutex);
+		pthread_mutex_destroy(&philos[i].meal_count_mutex);
 		i++;
 	}
 	i = 0;

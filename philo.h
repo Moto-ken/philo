@@ -8,7 +8,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <sys/time.h>
-#include <limits.h>
+# include <limits.h>
+# include <string.h>
 
 typedef struct s_rules
 {

@@ -1,9 +1,8 @@
 
 #include "philo.h"
 
-static bool	is_stopped(t_monitor_args *monitor)
+static bool is_stopped_monitor(t_monitor_args *monitor)
 {
-	bool	stop;
 
 	pthread_mutex_lock(&monitor->rules->print_mutex);
 	stop = *(monitor->stop_flag);
@@ -11,13 +10,13 @@ static bool	is_stopped(t_monitor_args *monitor)
 	return (stop);
 }
 
-static bool	check_death(t_monitor_args *monitor)
+static bool check_death(t_monitor_args *monitor)
 {
-	t_philo	*philos;
-	t_rules	*rules;
-	long	last_meal;
-	long	now;
-	int		i;
+	t_philo *philos;
+	t_rules *rules;
+	long last_meal;
+	long now;
+	int i;
 
 	philos = monitor->philos;
 	rules = monitor->rules;
@@ -42,12 +41,12 @@ static bool	check_death(t_monitor_args *monitor)
 	return (false);
 }
 
-static bool	check_all_full(t_monitor_args *monitor)
+static bool check_all_full(t_monitor_args *monitor)
 {
-	t_philo	*philos;
-	t_rules	*rules;
-	bool	full;
-	int		i;
+	t_philo *philos;
+	t_rules *rules;
+	bool full;
+	int i;
 
 	rules = monitor->rules;
 	if (rules->number_of_times_each_philosopher_must_eat <= 0)
@@ -59,8 +58,7 @@ static bool	check_all_full(t_monitor_args *monitor)
 	while (i < rules->number_of_philosophers)
 	{
 		pthread_mutex_lock(&philos[i].meal_count_mutex);
-		if (philos[i].meal_count
-			< rules->number_of_times_each_philosopher_must_eat)
+		if (philos[i].meal_count < rules->number_of_times_each_philosopher_must_eat)
 			full = false;
 		pthread_mutex_unlock(&philos[i].meal_count_mutex);
 		i++;
@@ -74,12 +72,12 @@ static bool	check_all_full(t_monitor_args *monitor)
 	return (full);
 }
 
-void	*monitor_routine(void *arg)
+void *monitor_routine(void *arg)
 {
-	t_monitor_args	*monitor;
+	t_monitor_args *monitor;
 
 	monitor = (t_monitor_args *)arg;
-	while (!is_stopped(monitor))
+	while (!is_stopped_monitor(monitor))
 	{
 		if (check_death(monitor))
 		{
@@ -97,10 +95,10 @@ void	*monitor_routine(void *arg)
 	return (NULL);
 }
 
-int	run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
-		pthread_t *monitor_thread)
+int run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
+				pthread_t *monitor_thread)
 {
-	t_monitor_args	*args;
+	t_monitor_args *args;
 
 	args = malloc(sizeof(t_monitor_args));
 	if (!args)

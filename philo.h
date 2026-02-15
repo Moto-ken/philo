@@ -55,7 +55,6 @@ void        print_status(t_philo *philo, char *msg);
 
 t_philo     *philosopher_init(t_rules *rules, bool *stop_flag);
 t_rules     *rules_create(int argc, char **argv);
-int         atoi_datas(t_rules *rules, char **argv);
 
 int         run_philos(t_rules *rules, t_philo *philos);
 int         run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,

@@ -5,10 +5,12 @@ CFLAGS      := -Wall -Wextra -Werror
 
 SRCS        := philo.c \
                print.c \
+			   rules_create.c \
                run_monitor.c \
                run_philos.c \
                free.c \
-			   libft.c
+			   libft.c \
+			   utile.c
 
 OBJS        := $(SRCS:.c=.o)
 

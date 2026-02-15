@@ -3,6 +3,7 @@
 
 static bool is_stopped_monitor(t_monitor_args *monitor)
 {
+	bool stop;
 
 	pthread_mutex_lock(&monitor->rules->print_mutex);
 	stop = *(monitor->stop_flag);

@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 13:41:03 by kemotoha          #+#    #+#             */
+/*   Updated: 2026/02/16 13:41:05 by kemotoha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void free_philos(t_philo *philos, int n)
+void	free_philos(t_philo *philos, int n)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!philos)
-		return;
+		return ;
 	while (i < n)
 	{
 		pthread_mutex_destroy(&philos[i].meal_mutex);
@@ -16,22 +28,22 @@ void free_philos(t_philo *philos, int n)
 	free(philos);
 }
 
-void cleanup_rules(t_rules *rules)
+void	cleanup_rules(t_rules *rules)
 {
 	if (!rules)
-		return;
+		return ;
 	if (rules->forks)
 		free(rules->forks);
 	pthread_mutex_destroy(&rules->print_mutex);
 	free(rules);
 }
 
-void free_rules(t_rules *rules)
+void	free_rules(t_rules *rules)
 {
-	int i;
+	int	i;
 
 	if (!rules)
-		return;
+		return ;
 	if (rules->forks)
 	{
 		i = 0;
@@ -46,10 +58,9 @@ void free_rules(t_rules *rules)
 	free(rules);
 }
 
-void join_and_free(t_rules *rules, t_philo *philos,
-				   pthread_t monitor_thread)
+void	join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread)
 {
-	int i;
+	int	i;
 
 	pthread_join(monitor_thread, NULL);
 	i = 0;

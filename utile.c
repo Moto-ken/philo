@@ -1,17 +1,44 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utile.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 13:41:40 by kemotoha          #+#    #+#             */
+/*   Updated: 2026/02/16 13:53:37 by kemotoha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
-long get_elapsed_ms(struct timeval *start)
+// long	get_elapsed_ms(struct timeval *start)
+// {
+// 	struct timeval	now;
+
+// 	gettimeofday(&now, NULL);
+// 	return (long)((now.tv_sec - start->tv_sec) * 1000 + (now.tv_usec
+// 			- start->tv_usec) / 1000);
+// }
+
+long	get_elapsed_ms(struct timeval *start)
 {
-	struct timeval now;
+	struct timeval	now;
+	long			sec_diff;
+	long			usec_diff;
+	long			elapsed_ms;
+
 	gettimeofday(&now, NULL);
-	return (long)((now.tv_sec - start->tv_sec) * 1000 + (now.tv_usec - start->tv_usec) / 1000);
+	sec_diff = now.tv_sec - start->tv_sec;
+	usec_diff = now.tv_usec - start->tv_usec;
+	elapsed_ms = sec_diff * 1000 + usec_diff / 1000;
+	return (elapsed_ms);
 }
 
-void precise_sleep(t_philo *philo, long duration_ms)
+void	precise_sleep(t_philo *philo, long duration_ms)
 {
-	struct timeval start;
-	long elapsed;
+	struct timeval	start;
+	long			elapsed;
 
 	gettimeofday(&start, NULL);
 	while (1)
@@ -20,19 +47,17 @@ void precise_sleep(t_philo *philo, long duration_ms)
 		if (*(philo->stop_flag))
 		{
 			pthread_mutex_unlock(&philo->rules->print_mutex);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&philo->rules->print_mutex);
-
 		elapsed = get_elapsed_ms(&start);
 		if (elapsed >= duration_ms)
-			break;
-
+			break ;
 		usleep(500);
 	}
 }
 
-int atoi_datas(t_rules *rules, char **argv)
+int	atoi_datas(t_rules *rules, char **argv)
 {
 	if (!isnum(argv[1]))
 		return (1);

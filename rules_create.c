@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rules_create.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 13:41:32 by kemotoha          #+#    #+#             */
+/*   Updated: 2026/02/16 13:41:34 by kemotoha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
-static int set_meal_limit(t_rules *rules, int argc, char **argv)
+static int	set_meal_limit(t_rules *rules, int argc, char **argv)
 {
 	if (argc == 5)
 	{
@@ -18,10 +29,10 @@ static int set_meal_limit(t_rules *rules, int argc, char **argv)
 	return (1);
 }
 
-static int init_forks_mutexes(t_rules *rules)
+static int	init_forks_mutexes(t_rules *rules)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	while (i < rules->number_of_philosophers)
@@ -41,23 +52,24 @@ static int init_forks_mutexes(t_rules *rules)
 	return (0);
 }
 
-static int init_rules_resources(t_rules *rules, int argc, char **argv)
+static int	init_rules_resources(t_rules *rules, int argc, char **argv)
 {
 	if (pthread_mutex_init(&rules->print_mutex, NULL) != 0)
-		return 1;
+		return (1);
 	if (set_meal_limit(rules, argc, argv))
-		return 1;
-	rules->forks = malloc(sizeof(pthread_mutex_t) * rules->number_of_philosophers);
+		return (1);
+	rules->forks = malloc(sizeof(pthread_mutex_t)
+			* rules->number_of_philosophers);
 	if (!rules->forks)
-		return 1;
+		return (1);
 	if (init_forks_mutexes(rules))
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }
 
-t_rules *rules_create(int argc, char **argv)
+t_rules	*rules_create(int argc, char **argv)
 {
-	t_rules *rules;
+	t_rules	*rules;
 
 	rules = malloc(sizeof(t_rules));
 	if (!rules)

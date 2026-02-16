@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosopher_create.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/16 13:41:23 by kemotoha          #+#    #+#             */
+/*   Updated: 2026/02/16 13:41:28 by kemotoha         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
-static void decide_forks(t_philo *philo, t_rules *rules, int i)
+static void	decide_forks(t_philo *philo, t_rules *rules, int i)
 {
 	if (rules->number_of_philosophers == 1)
 	{
@@ -11,11 +22,12 @@ static void decide_forks(t_philo *philo, t_rules *rules, int i)
 	else
 	{
 		philo[i].left_fork = &rules->forks[i];
-		philo[i].right_fork = &rules->forks[(i + 1) % rules->number_of_philosophers];
+		philo[i].right_fork = &rules->forks[(i + 1)
+			% rules->number_of_philosophers];
 	}
 }
 
-static int init_philo_mutexes(t_philo *philos, int i)
+static int	init_philo_mutexes(t_philo *philos, int i)
 {
 	if (pthread_mutex_init(&philos[i].meal_mutex, NULL) != 0)
 	{
@@ -30,10 +42,10 @@ static int init_philo_mutexes(t_philo *philos, int i)
 	return (0);
 }
 
-t_philo *philosopher_create(t_rules *rules, bool *stop_flag)
+t_philo	*philosopher_create(t_rules *rules, bool *stop_flag)
 {
-	t_philo *philos;
-	int i;
+	t_philo	*philos;
+	int		i;
 
 	philos = malloc(sizeof(t_philo) * rules->number_of_philosophers);
 	if (!philos)

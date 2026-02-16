@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/02/16 13:41:09 by kemotoha          #+#    #+#              #
+#    Updated: 2026/02/16 14:13:14 by kemotoha         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 
 NAME        := philo
 CC          := cc
@@ -7,6 +19,7 @@ SRCS        := philo.c \
                print.c \
 			   rules_create.c \
 			   philosopher_create.c \
+			   run_thread.c \
                run_monitor.c \
                run_philos.c \
                free.c \

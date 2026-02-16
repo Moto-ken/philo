@@ -31,3 +31,28 @@ void precise_sleep(t_philo *philo, long duration_ms)
 		usleep(500);
 	}
 }
+
+int atoi_datas(t_rules *rules, char **argv)
+{
+	if (!isnum(argv[1]))
+		return (1);
+	rules->number_of_philosophers = ft_atoi(argv[1]);
+	if (rules->number_of_philosophers <= 0)
+		return (1);
+	if (!isnum(argv[2]))
+		return (1);
+	rules->time_to_die = ft_atol(argv[2]);
+	if (rules->time_to_die <= 0)
+		return (1);
+	if (!isnum(argv[3]))
+		return (1);
+	rules->time_to_eat = ft_atol(argv[3]);
+	if (rules->time_to_eat <= 0)
+		return (1);
+	if (!isnum(argv[4]))
+		return (1);
+	rules->time_to_sleep = ft_atol(argv[4]);
+	if (rules->time_to_sleep <= 0)
+		return (1);
+	return (0);
+}

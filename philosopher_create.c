@@ -15,6 +15,21 @@ static void decide_forks(t_philo *philo, t_rules *rules, int i)
 	}
 }
 
+static int init_philo_mutexes(t_philo *philos, int i)
+{
+	if (pthread_mutex_init(&philos[i].meal_mutex, NULL) != 0)
+	{
+		free_philos(philos, i);
+		return (1);
+	}
+	if (pthread_mutex_init(&philos[i].meal_count_mutex, NULL) != 0)
+	{
+		free_philos(philos, i + 1);
+		return (1);
+	}
+	return (0);
+}
+
 t_philo *philosopher_create(t_rules *rules, bool *stop_flag)
 {
 	t_philo *philos;
@@ -32,8 +47,8 @@ t_philo *philosopher_create(t_rules *rules, bool *stop_flag)
 		philos[i].meals_eaten = get_elapsed_ms(&rules->start_time);
 		philos[i].rules = rules;
 		decide_forks(philos, rules, i);
-		pthread_mutex_init(&philos[i].meal_mutex, NULL);
-		pthread_mutex_init(&philos[i].meal_count_mutex, NULL);
+		if (init_philo_mutexes(philos, i))
+			return (NULL);
 		philos[i].stop_flag = stop_flag;
 		i++;
 	}

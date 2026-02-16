@@ -47,6 +47,7 @@ typedef struct s_monitor_args
 
 long        get_elapsed_ms(struct timeval *start);
 void        precise_sleep(t_philo *philo, long duration_ms);
+int			atoi_datas(t_rules *rules, char **argv);
 int         isnum(char *str);
 int         ft_atoi(const char *str);
 long        ft_atol(const char *str);
@@ -64,6 +65,7 @@ int         run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,
 
 void        free_philos(t_philo *philos, int n);
 void        free_rules(t_rules *rules);
+void		cleanup_rules(t_rules *rules);
 void        join_and_free(t_rules *rules, t_philo *philos, pthread_t monitor_thread);
 
 #endif

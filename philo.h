@@ -52,8 +52,10 @@ int         ft_atoi(const char *str);
 long        ft_atol(const char *str);
 
 void        print_status(t_philo *philo, char *msg);
+void		print_died(t_monitor_args *monitor, t_philo *philo);
 
 t_philo     *philosopher_init(t_rules *rules, bool *stop_flag);
+t_philo		*philosopher_create(t_rules *rules, bool *stop_flag);
 t_rules     *rules_create(int argc, char **argv);
 
 int         run_philos(t_rules *rules, t_philo *philos);

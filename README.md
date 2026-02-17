@@ -22,7 +22,7 @@ a philosopher dies of starvation.
 
 ## Instructions
 
-To compile: make
+To compile: make <br>
 Example of execution: ./philo 5 800 200 200 3
 
 - `number_of_philosophers`: total number of philosophers (and forks)

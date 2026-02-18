@@ -1,4 +1,4 @@
 42-philosophers-tester/
 *.o
 *.a
-philo
+philo/philo

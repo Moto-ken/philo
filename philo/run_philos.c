@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:38 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 14:19:52 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:11:32 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static bool	is_stopped_philo(t_philo *philo)
 	return (stop);
 }
 
-static int take_two_forks(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second)
+static int	take_two_forks(t_philo *philo, pthread_mutex_t *first,
+		pthread_mutex_t *second)
 {
 	pthread_mutex_lock(first);
 	if (is_stopped_philo(philo))
@@ -47,16 +48,12 @@ static int	take_forks(t_philo *philo)
 	if (is_stopped_philo(philo))
 		return (1);
 	if (philo->id % 2 == 0)
-	{
 		return (take_two_forks(philo, philo->right_fork, philo->left_fork));
-	}
-    else
-    {
+	else
 		return (take_two_forks(philo, philo->left_fork, philo->right_fork));
-    }
 }
 
-static int eat_philo(t_philo *philo)
+static int	eat_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
@@ -73,7 +70,7 @@ static int eat_philo(t_philo *philo)
 	return (0);
 }
 
-static void single_philo(t_philo *philo)
+static void	single_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);

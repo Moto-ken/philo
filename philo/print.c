@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:30 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 13:41:31 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:07:13 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 void	print_status(t_philo *philo, char *msg)
 {
-	long now = get_elapsed_ms(&philo->rules->start_time);
+	long	now;
 
+	now = get_elapsed_ms(&philo->rules->start_time);
 	pthread_mutex_lock(&philo->rules->print_mutex);
-	if (*philo->stop_flag || now - philo->last_meal_time > philo->rules->time_to_die)
+	if (*philo->stop_flag || now
+		- philo->last_meal_time > philo->rules->time_to_die)
 	{
 		pthread_mutex_unlock(&philo->rules->print_mutex);
-		return;
+		return ;
 	}
 	printf("%ld %d %s\n", now, philo->id, msg);
 	pthread_mutex_unlock(&philo->rules->print_mutex);

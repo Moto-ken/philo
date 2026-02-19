@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:35 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 14:20:34 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:22:18 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static bool	chenge_full(t_philo *philos, t_rules *rules)
 	while (i < rules->number_of_philosophers)
 	{
 		pthread_mutex_lock(&philos[i].meal_count_mutex);
-		if (philos[i].meal_count < rules->number_of_times_each_philosopher_must_eat)
+		if (philos[i].meal_count
+			< rules->number_of_times_each_philosopher_must_eat)
 			full = false;
 		pthread_mutex_unlock(&philos[i].meal_count_mutex);
 		i++;

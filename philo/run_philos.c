@@ -6,21 +6,21 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:38 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/19 18:11:32 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:20:28 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	is_stopped_philo(t_philo *philo)
-{
-	bool	stop;
+// bool	is_stopped_philo(t_philo *philo)
+// {
+// 	bool	stop;
 
-	pthread_mutex_lock(&philo->rules->print_mutex);
-	stop = *(philo->stop_flag);
-	pthread_mutex_unlock(&philo->rules->print_mutex);
-	return (stop);
-}
+// 	pthread_mutex_lock(&philo->rules->print_mutex);
+// 	stop = *(philo->stop_flag);
+// 	pthread_mutex_unlock(&philo->rules->print_mutex);
+// 	return (stop);
+// }
 
 static int	take_two_forks(t_philo *philo, pthread_mutex_t *first,
 		pthread_mutex_t *second)

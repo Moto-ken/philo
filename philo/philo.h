@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:18 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 14:16:44 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:21:04 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int					atoi_datas(t_rules *rules, char **argv);
 int					isnum(char *str);
 int					ft_atoi(const char *str);
 long				ft_atol(const char *str);
+bool				is_stopped_philo(t_philo *philo);
 
 void				print_status(t_philo *philo, char *msg);
 void				print_died(t_monitor_args *monitor, t_philo *philo);

@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:40 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 13:53:37 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/19 18:20:36 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,14 @@ int	atoi_datas(t_rules *rules, char **argv)
 	if (rules->time_to_sleep <= 0)
 		return (1);
 	return (0);
+}
+
+bool	is_stopped_philo(t_philo *philo)
+{
+	bool	stop;
+
+	pthread_mutex_lock(&philo->rules->print_mutex);
+	stop = *(philo->stop_flag);
+	pthread_mutex_unlock(&philo->rules->print_mutex);
+	return (stop);
 }

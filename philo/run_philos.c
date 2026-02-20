@@ -3,24 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   run_philos.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:38 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/19 18:20:28 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 19:43:03 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// bool	is_stopped_philo(t_philo *philo)
-// {
-// 	bool	stop;
-
-// 	pthread_mutex_lock(&philo->rules->print_mutex);
-// 	stop = *(philo->stop_flag);
-// 	pthread_mutex_unlock(&philo->rules->print_mutex);
-// 	return (stop);
-// }
 
 static int	take_two_forks(t_philo *philo, pthread_mutex_t *first,
 		pthread_mutex_t *second)
@@ -56,7 +46,7 @@ static int	take_forks(t_philo *philo)
 static int	eat_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
-	philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
+	philo->last_meal_time = get_elapsed_us(&philo->rules->start_time);
 	pthread_mutex_unlock(&philo->meal_mutex);
 	if (is_stopped_philo(philo))
 		return (1);
@@ -70,10 +60,10 @@ static int	eat_philo(t_philo *philo)
 	return (0);
 }
 
-static void	single_philo(t_philo *philo)
+static bool	single_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->meal_mutex);
-	philo->last_meal_time = get_elapsed_ms(&philo->rules->start_time);
+	philo->last_meal_time = get_elapsed_us(&philo->rules->start_time);
 	pthread_mutex_unlock(&philo->meal_mutex);
 	if (!philo->right_fork)
 	{
@@ -81,10 +71,11 @@ static void	single_philo(t_philo *philo)
 		print_status(philo, "has taken a fork");
 		usleep(philo->rules->time_to_die * 1000);
 		pthread_mutex_unlock(philo->left_fork);
-		pthread_exit(NULL);
+		return (false);
 	}
 	if (philo->id % 2 == 0)
 		usleep(philo->rules->time_to_eat * 500);
+	return (true);
 }
 
 void	*philo_routine(void *arg)
@@ -92,7 +83,8 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	single_philo(philo);
+	if (!single_philo(philo))
+		return (NULL);
 	while (!is_stopped_philo(philo))
 	{
 		print_status(philo, "is thinking");

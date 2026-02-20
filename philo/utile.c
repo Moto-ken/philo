@@ -6,31 +6,31 @@
 /*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:40 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/20 16:38:10 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 20:37:18 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_elapsed_ms(struct timeval *start)
+long	get_elapsed_us(struct timeval *start)
 {
 	struct timeval	now;
 	long			sec_diff;
 	long			usec_diff;
-	long			elapsed_ms;
 
 	gettimeofday(&now, NULL);
 	sec_diff = now.tv_sec - start->tv_sec;
 	usec_diff = now.tv_usec - start->tv_usec;
-	elapsed_ms = sec_diff * 1000 + usec_diff / 1000;
-	return (elapsed_ms);
+	return (sec_diff * 1000000 + usec_diff);
 }
 
 void	precise_sleep(t_philo *philo, long duration_ms)
 {
 	struct timeval	start;
-	long			elapsed;
+	long			elapsed_us;
+	long			duration_us;
 
+	duration_us = duration_ms * 1000;
 	gettimeofday(&start, NULL);
 	while (1)
 	{
@@ -41,8 +41,8 @@ void	precise_sleep(t_philo *philo, long duration_ms)
 			break ;
 		}
 		pthread_mutex_unlock(&philo->rules->print_mutex);
-		elapsed = get_elapsed_ms(&start);
-		if (elapsed >= duration_ms)
+		elapsed_us = get_elapsed_us(&start);
+		if (elapsed_us >= duration_us)
 			break ;
 		usleep(500);
 	}

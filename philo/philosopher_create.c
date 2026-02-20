@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_create.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:23 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 13:41:28 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 20:35:25 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ t_philo	*philosopher_create(t_rules *rules, bool *stop_flag)
 	{
 		philos[i].id = i + 1;
 		philos[i].last_meal_time = 0;
-		philos[i].meals_eaten = get_elapsed_ms(&rules->start_time);
 		philos[i].rules = rules;
 		decide_forks(philos, rules, i);
 		if (init_philo_mutexes(philos, i))

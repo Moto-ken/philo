@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:18 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/20 16:53:13 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 20:37:10 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_philo
 {
 	int				id;
 	long			last_meal_time;
-	int				meals_eaten;
 	pthread_t		thread_id;
 	t_rules			*rules;
 	pthread_mutex_t	*left_fork;
@@ -56,7 +55,7 @@ typedef struct s_monitor_args
 	bool			*stop_flag;
 }					t_monitor_args;
 
-long				get_elapsed_ms(struct timeval *start);
+long				get_elapsed_us(struct timeval *start);
 void				precise_sleep(t_philo *philo, long duration_ms);
 int					atoi_datas(t_rules *rules, char **argv);
 int					isnum(char *str);

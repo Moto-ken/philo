@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_monitor.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:35 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/19 18:22:18 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 19:43:51 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ static bool	check_death(t_monitor_args *monitor)
 		pthread_mutex_lock(&philos[i].meal_mutex);
 		last_meal = philos[i].last_meal_time;
 		pthread_mutex_unlock(&philos[i].meal_mutex);
-		now = get_elapsed_ms(&rules->start_time);
-		if (now - last_meal > rules->time_to_die)
+		now = get_elapsed_us(&rules->start_time);
+		if ((now - last_meal) / 1000 > rules->time_to_die)
 		{
 			print_died(monitor, &philos[i]);
 			return (true);
@@ -59,8 +59,7 @@ static bool	chenge_full(t_philo *philos, t_rules *rules)
 	while (i < rules->number_of_philosophers)
 	{
 		pthread_mutex_lock(&philos[i].meal_count_mutex);
-		if (philos[i].meal_count
-			< rules->number_of_times_each_philosopher_must_eat)
+		if (philos[i].meal_count < rules->number_of_times_each_philosopher_must_eat)
 			full = false;
 		pthread_mutex_unlock(&philos[i].meal_count_mutex);
 		i++;

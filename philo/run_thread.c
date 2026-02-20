@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   run_thread.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 14:09:19 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 14:10:13 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 18:06:37 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,27 @@
 int	run_philos(t_rules *rules, t_philo *philos)
 {
 	int	i;
+	int	c;
 
+	c = 0;
 	i = 0;
 	while (i < rules->number_of_philosophers)
 	{
 		if (pthread_create(&philos[i].thread_id, NULL, philo_routine,
 				&philos[i]) != 0)
-			return (1);
+		{
+			c = i;
+			*philos[i].stop_flag = true;
+			while (i >= 0)
+			{
+				pthread_join(philos[i].thread_id, NULL);
+				i--;
+			}
+			return (c);
+		}
 		i++;
 	}
-	return (0);
+	return (i);
 }
 
 int	run_monitor(t_philo *philos, t_rules *rules, bool *stop_flag,

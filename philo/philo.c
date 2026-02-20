@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:12 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 14:02:45 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 18:15:16 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,12 @@ static int	philosopher_init(t_rules *rules, t_philo **philos, bool *stop_flag)
 static int	run_all(t_rules *rules, t_philo *philos, bool *stop_flag,
 		pthread_t *monitor_thread)
 {
-	if (run_philos(rules, philos))
+	int	succes;
+
+	succes = run_philos(rules, philos);
+	if (succes < rules->number_of_philosophers)
 	{
-		free_philos(philos, rules->number_of_philosophers);
+		free_philos(philos, succes);
 		free_rules(rules);
 		return (1);
 	}

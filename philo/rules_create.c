@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rules_create.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:32 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/16 13:41:34 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 17:23:58 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static int	set_meal_limit(t_rules *rules, int argc, char **argv)
 	{
 		if (!isnum(argv[5]))
 			return (1);
-		rules->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
+		rules->number_of_times_each_philosopher_must_eat = ft_atol(argv[5]);
+		if (rules->number_of_times_each_philosopher_must_eat <= 0)
+			return (1);
 		return (0);
 	}
 	return (1);
@@ -55,15 +57,27 @@ static int	init_forks_mutexes(t_rules *rules)
 static int	init_rules_resources(t_rules *rules, int argc, char **argv)
 {
 	if (pthread_mutex_init(&rules->print_mutex, NULL) != 0)
+	{
+		free(rules);
 		return (1);
+	}
 	if (set_meal_limit(rules, argc, argv))
+	{
+		cleanup_rules(rules);
 		return (1);
+	}
 	rules->forks = malloc(sizeof(pthread_mutex_t)
 			* rules->number_of_philosophers);
 	if (!rules->forks)
+	{
+		cleanup_rules(rules);
 		return (1);
+	}
 	if (init_forks_mutexes(rules))
+	{
+		cleanup_rules(rules);
 		return (1);
+	}
 	return (0);
 }
 
@@ -82,9 +96,6 @@ t_rules	*rules_create(int argc, char **argv)
 	}
 	gettimeofday(&rules->start_time, NULL);
 	if (init_rules_resources(rules, argc, argv))
-	{
-		cleanup_rules(rules);
 		return (NULL);
-	}
 	return (rules);
 }

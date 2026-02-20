@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:18 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/19 18:21:04 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 16:53:13 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_rules
 	long			time_to_die;
 	long			time_to_eat;
 	long			time_to_sleep;
-	int				number_of_times_each_philosopher_must_eat;
+	long			number_of_times_each_philosopher_must_eat;
 	pthread_mutex_t	*forks;
 	struct timeval	start_time;
 	pthread_mutex_t	print_mutex;

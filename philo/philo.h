@@ -6,7 +6,7 @@
 /*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:18 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/20 20:37:10 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/20 23:23:09 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int					ft_atoi(const char *str);
 long				ft_atol(const char *str);
 bool				is_stopped_philo(t_philo *philo);
 
-void				print_status(t_philo *philo, char *msg);
+int					print_status(t_philo *philo, char *msg);
 void				print_died(t_monitor_args *monitor, t_philo *philo);
 
 t_philo				*philosopher_create(t_rules *rules, bool *stop_flag);

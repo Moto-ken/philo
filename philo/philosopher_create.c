@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosopher_create.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kemotoha <kemotoha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/16 13:41:23 by kemotoha          #+#    #+#             */
-/*   Updated: 2026/02/20 20:35:25 by kemotoha         ###   ########.fr       */
+/*   Updated: 2026/02/23 12:03:20 by kemotoha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ static int	init_philo_mutexes(t_philo *philos, int i)
 	}
 	if (pthread_mutex_init(&philos[i].meal_count_mutex, NULL) != 0)
 	{
-		free_philos(philos, i + 1);
+		pthread_mutex_destroy(&philos[i].meal_mutex);
+		free_philos(philos, i);
 		return (1);
 	}
 	return (0);

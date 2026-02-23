@@ -6,7 +6,7 @@
 #    By: kemotoha <kemotoha@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/02/16 13:41:09 by kemotoha          #+#    #+#              #
-#    Updated: 2026/02/16 14:13:14 by kemotoha         ###   ########.fr        #
+#    Updated: 2026/02/23 12:10:53 by kemotoha         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,8 @@ SRCS        := philo.c \
 			   rules_create.c \
 			   philosopher_create.c \
 			   run_thread.c \
-               run_monitor.c \
-               run_philos.c \
+               monitor_routine.c \
+               philo_routine.c \
                free.c \
 			   libft.c \
 			   utile.c
